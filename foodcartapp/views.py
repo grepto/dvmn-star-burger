@@ -2,8 +2,11 @@ import json
 
 from django.http import JsonResponse
 from django.templatetags.static import static
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from .models import Product, Order, OrderItem
+from .models import Product, Order
 
 
 def banners_list_api(request):
@@ -58,15 +61,17 @@ def product_list_api(request):
     })
 
 
+@api_view(['POST', ])
 def register_order(request):
     try:
-        data = json.loads(request.body.decode())
+        data = request.data
         order = Order.objects.create(last_name=data['lastname'],
                                      first_name=data['firstname'],
                                      phone_number=data['phonenumber'],
                                      )
         for item in data['products']:
             order.order_items.create(product_id=item['product'], quantity=item['quantity'])
+        return Response(data, status=status.HTTP_201_CREATED)
     except ValueError:
-        pass
-    return JsonResponse({})
+        return Response(None, status=status.HTTP_400_BAD_REQUEST)
+
