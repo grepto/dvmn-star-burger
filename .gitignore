@@ -1,5 +1,9 @@
 bundles/**
 db.sqlite3
 .cache
+.idea
 node_modules/
 media/
+.DS_Store
+.venv
+*__pycache__*
