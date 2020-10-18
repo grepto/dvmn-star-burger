@@ -84,11 +84,17 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_items', verbose_name='продукт')
-    quantity = models.IntegerField('количество', validators=[MinValueValidator(0)])
+    quantity = models.PositiveSmallIntegerField('количество', validators=[MinValueValidator(1)])
+    price = models.PositiveSmallIntegerField('Стоимость')
 
     def __str__(self):
-        return f"{self.product.name} - {self.quantity} шт."
+        return f"{self.product.name} - {self.quantity} шт.  - {self.order}"
 
     class Meta:
         verbose_name = 'пункт заказа'
         verbose_name_plural = 'пункты заказа'
+
+    # def save(self, *args, **kwargs):
+    #     if not self.pk:
+    #         self.price = self.product.price * self.quantity
+    #     super(OrderItem, self).save(*args, **kwargs)
