@@ -68,13 +68,13 @@ class RestaurantMenuItem(models.Model):
 
 
 class Order(models.Model):
-    first_name = models.CharField('имя', max_length=100)
-    last_name = models.CharField('фамилия', max_length=100)
-    phone_number = models.CharField('номер телефона', max_length=100)
+    firstname = models.CharField('имя', max_length=100)
+    lastname = models.CharField('фамилия', max_length=100)
+    phonenumber = models.CharField('номер телефона', max_length=100)
     address = models.TextField('адрес доставки', max_length=8000)
 
     def __str__(self):
-        return f"{self.last_name} {self.first_name} - {self.phone_number}"
+        return f"{self.lastname} {self.firstname} - {self.phonenumber}"
 
     class Meta:
         verbose_name = 'заказ'

@@ -119,17 +119,17 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     search_fields = [
         'get_client_full_name',
-        'phone_number   ',
+        'phonenumber   ',
     ]
     list_display = [
         'get_client_full_name',
-        'phone_number',
+        'phonenumber',
     ]
     inlines = [
         OrderItemInline
     ]
 
     def get_client_full_name(self, obj):
-        return f"{obj.last_name} {obj.first_name}"
+        return f"{obj.lastname} {obj.firstname}"
 
     get_client_full_name.short_description = 'Клиент'

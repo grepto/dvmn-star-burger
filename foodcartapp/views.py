@@ -6,7 +6,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Product, Order
+from .models import Product, Order, OrderItem
+from .serializer import OrderSerializer
 
 
 def banners_list_api(request):
@@ -63,22 +64,16 @@ def product_list_api(request):
 
 @api_view(['POST', ])
 def register_order(request):
-    try:
-        data = request.data
-        if data.get('products') \
-            and isinstance(data['products'], list) \
-            and all([data.get('firstname'), data.get('lastname'), data.get('phonenumber'), data.get('address')]) \
-            and all([Product.objects.filter(id=item['product']) for item in data.get('products')]) \
-            and isinstance(data.get('firstname'), str):
-            order = Order.objects.create(last_name=data['lastname'],
-                                         first_name=data['firstname'],
-                                         phone_number=data['phonenumber'],
-                                         )
-        else:
-            return Response(None, status=status.HTTP_400_BAD_REQUEST)
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    data = serializer.validated_data
 
-        for item in data['products']:
-            order.order_items.create(product_id=item['product'], quantity=item['quantity'])
-        return Response(data, status=status.HTTP_201_CREATED)
-    except ValueError:
-        return Response(None, status=status.HTTP_400_BAD_REQUEST)
+    order = Order.objects.create(lastname=data['lastname'],
+                                 firstname=data['firstname'],
+                                 phonenumber=data['phonenumber'],
+                                 )
+    products_fields = data['products']
+    products = [OrderItem(order=order, **fields) for fields in products_fields]
+    OrderItem.objects.bulk_create(products)
+
+    return Response({'order_id': order.id}, status=status.HTTP_201_CREATED)
