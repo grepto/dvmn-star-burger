@@ -3,7 +3,8 @@ import json
 from django.http import JsonResponse
 from django.templatetags.static import static
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response
 
 from .models import Product, Order, OrderItem
@@ -63,17 +64,21 @@ def product_list_api(request):
 
 
 @api_view(['POST', ])
+@renderer_classes((JSONRenderer, BrowsableAPIRenderer, ))
 def register_order(request):
     serializer = OrderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    data = serializer.validated_data
+    validated_data = serializer.validated_data
 
-    order = Order.objects.create(lastname=data['lastname'],
-                                 firstname=data['firstname'],
-                                 phonenumber=data['phonenumber'],
+    order = Order.objects.create(lastname=validated_data['lastname'],
+                                 firstname=validated_data['firstname'],
+                                 phonenumber=validated_data['phonenumber'],
+                                 address=validated_data['address']
+
                                  )
-    products_fields = data['products']
-    products = [OrderItem(order=order, **fields) for fields in products_fields]
-    OrderItem.objects.bulk_create(products)
+    order_items_fields = validated_data['products']
+    order_items = [OrderItem(order=order, **fields) for fields in order_items_fields]
+    OrderItem.objects.bulk_create(order_items)
 
-    return Response({'order_id': order.id}, status=status.HTTP_201_CREATED)
+    serializer = OrderSerializer(order)
+    return Response(serializer.data)
