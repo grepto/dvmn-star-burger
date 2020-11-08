@@ -120,7 +120,7 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     search_fields = [
         'get_client_full_name',
-        'phonenumber   ',
+        'phonenumber',
     ]
     list_display = [
         'get_client_full_name',
