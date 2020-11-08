@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='order',
             name='status',
-            field=models.IntegerField(choices=[(0, 'Необработанный'), (1, 'Готовится'), (2, 'На доставке'), (3, 'Доставлен')], default=0, verbose_name='Статус'),
+            field=models.IntegerField(choices=[(0, 'Необработанный'), (1, 'Готовится'), (2, 'На доставке'), (3, 'Доставлен')], default=0, verbose_name='статус'),
         ),
     ]

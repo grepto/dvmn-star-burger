@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='order',
             name='comment',
-            field=models.TextField(blank=True, verbose_name='Комментарий'),
+            field=models.TextField(blank=True, verbose_name='комментарий'),
         ),
     ]
