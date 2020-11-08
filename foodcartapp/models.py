@@ -74,17 +74,27 @@ class Order(models.Model):
     DELIVERY = 2
     DELIVERED = 3
 
+    CASH = 0
+    CARD = 1
+
     STATUS_CHOICES = [
         (NEW, 'Необработанный'),
         (COOKING, 'Готовится'),
         (DELIVERY, 'На доставке'),
         (DELIVERED, 'Доставлен'),
     ]
+
+    PAYMENT_FORM_CHOICES = [
+        (CASH, 'Наличные'),
+        (CARD, 'Электронно'),
+    ]
+
+    status = models.IntegerField('статус', choices=STATUS_CHOICES, default=0)
+    payment_form = models.IntegerField('способ оплаты', choices=PAYMENT_FORM_CHOICES, null=True)
     firstname = models.CharField('имя', max_length=100)
     lastname = models.CharField('фамилия', max_length=100)
     phonenumber = models.CharField('номер телефона', max_length=100)
     address = models.TextField('адрес доставки', max_length=8000)
-    status = models.IntegerField('статус', choices=STATUS_CHOICES, default=0)
     comment = models.TextField('комментарий', blank=True)
     registered_at = models.DateTimeField('создан', default=timezone.now)
     called_at = models.DateTimeField('звонок', blank=True, null=True)
