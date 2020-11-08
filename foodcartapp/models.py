@@ -83,7 +83,8 @@ class Order(models.Model):
     lastname = models.CharField('фамилия', max_length=100)
     phonenumber = models.CharField('номер телефона', max_length=100)
     address = models.TextField('адрес доставки', max_length=8000)
-    status = models.IntegerField('Статус',choices=STATUS_CHOICES, default=0)
+    status = models.IntegerField('Статус', choices=STATUS_CHOICES, default=0)
+    comment = models.TextField('Комментарий', blank=True)
 
     def __str__(self):
         return f"{self.lastname} {self.firstname} - {self.phonenumber}"
