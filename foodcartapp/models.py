@@ -68,10 +68,22 @@ class RestaurantMenuItem(models.Model):
 
 
 class Order(models.Model):
+    NEW = 0
+    COOKING = 1
+    DELIVERY = 2
+    DELIVERED = 3
+
+    STATUS_CHOICES = [
+        (NEW, 'Необработанный'),
+        (COOKING, 'Готовится'),
+        (DELIVERY, 'На доставке'),
+        (DELIVERED, 'Доставлен'),
+    ]
     firstname = models.CharField('имя', max_length=100)
     lastname = models.CharField('фамилия', max_length=100)
     phonenumber = models.CharField('номер телефона', max_length=100)
     address = models.TextField('адрес доставки', max_length=8000)
+    status = models.IntegerField('Статус',choices=STATUS_CHOICES, default=0)
 
     def __str__(self):
         return f"{self.lastname} {self.firstname} - {self.phonenumber}"
