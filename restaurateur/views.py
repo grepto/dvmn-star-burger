@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
-
 from foodcartapp.models import Product, Restaurant
 from foodcartapp.models import Order
 
@@ -73,7 +72,6 @@ def view_products(request):
     default_availability = {restaurant.id: False for restaurant in restaurants}
     products_with_restaurants = []
     for product in products:
-
         availability = {
             **default_availability,
             **{item.restaurant_id: item.availability for item in product.menu_items.all()},
@@ -99,7 +97,20 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.prefetch_related('order_items').annotate(price=Sum('order_items__price'))
+    products = Product.objects.filter(menu_items__availability=True).prefetch_related('menu_items__restaurant')
+
+    orders = Order.objects.all().annotate(price=Sum('order_items__price')).prefetch_related(
+        'order_items__product')
+
+    product_restaurants = {}
+    for product in products.all():
+        product_restaurants[product] = {menu_item.restaurant for menu_item in product.menu_items.all()}
+
+    for order in orders:
+        order_products = [order_item.product for order_item in order.order_items.all()]
+        if restaurants := [product_restaurants.get(product) for product in order_products]:
+            order.restaurants = restaurants[0].intersection(*restaurants)
+
     return render(request, template_name='orders.html', context={
         'orders': orders
     })
