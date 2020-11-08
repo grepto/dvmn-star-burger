@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils import timezone
 
 
 class Restaurant(models.Model):
@@ -83,8 +84,11 @@ class Order(models.Model):
     lastname = models.CharField('фамилия', max_length=100)
     phonenumber = models.CharField('номер телефона', max_length=100)
     address = models.TextField('адрес доставки', max_length=8000)
-    status = models.IntegerField('Статус', choices=STATUS_CHOICES, default=0)
-    comment = models.TextField('Комментарий', blank=True)
+    status = models.IntegerField('статус', choices=STATUS_CHOICES, default=0)
+    comment = models.TextField('комментарий', blank=True)
+    registered_at = models.DateTimeField('создан', default=timezone.now)
+    called_at = models.DateTimeField('звонок', blank=True, null=True)
+    delivered_at = models.DateTimeField('доставлен', blank=True, null=True)
 
     def __str__(self):
         return f"{self.lastname} {self.firstname} - {self.phonenumber}"
