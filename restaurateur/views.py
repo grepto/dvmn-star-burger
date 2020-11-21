@@ -1,4 +1,8 @@
+import copy
+from operator import attrgetter
+
 from django import forms
+from django.conf import settings
 from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.views import View
@@ -10,6 +14,7 @@ from django.contrib.auth import views as auth_views
 
 from foodcartapp.models import Product, Restaurant
 from foodcartapp.models import Order
+from restaurateur.geocoder import get_distance
 
 
 class Login(forms.Form):
@@ -109,7 +114,12 @@ def view_orders(request):
     for order in orders:
         order_products = [order_item.product for order_item in order.order_items.all()]
         if restaurants := [product_restaurants.get(product) for product in order_products]:
-            order.restaurants = restaurants[0].intersection(*restaurants)
+            relevant_restaurants = copy.deepcopy(restaurants[0].intersection(*restaurants))
+            for restaurant in relevant_restaurants:
+                restaurant.distance = get_distance(settings.GEOCODER_APIKEY, order.address, restaurant.address)
+                print(order.id, order.address, restaurant.address, restaurant.distance, sep=' | ')
+
+            order.restaurants = sorted(relevant_restaurants, key=lambda restaurant: restaurant.distance or 0)
 
     return render(request, template_name='orders.html', context={
         'orders': orders

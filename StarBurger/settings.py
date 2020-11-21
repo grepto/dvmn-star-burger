@@ -6,7 +6,6 @@ import dj_database_url
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'j#jww5g6d96bi#kbfpq%mgblr8^yg8$zmmg+c6dm+bxfa*&c+l'
 
@@ -123,8 +122,9 @@ INTERNAL_IPS = [
     '127.0.0.1'
 ]
 
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
     os.path.join(BASE_DIR, "bundles"),
 ]
+
+GEOCODER_APIKEY = env.str('GEOCODER_APIKEY')
