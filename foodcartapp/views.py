@@ -1,9 +1,6 @@
-import json
-
 from django.db import transaction
 from django.http import JsonResponse
 from django.templatetags.static import static
-from rest_framework import status
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.response import Response

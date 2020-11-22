@@ -120,8 +120,3 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name = 'пункт заказа'
         verbose_name_plural = 'пункты заказа'
-
-    # def save(self, *args, **kwargs):
-    #     if not self.pk:
-    #         self.price = self.product.price * self.quantity
-    #     super(OrderItem, self).save(*args, **kwargs)
