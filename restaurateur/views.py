@@ -3,6 +3,7 @@ from operator import attrgetter
 
 from django import forms
 from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.views import View
@@ -15,6 +16,8 @@ from django.contrib.auth import views as auth_views
 from foodcartapp.models import Product, Restaurant
 from foodcartapp.models import Order
 from restaurateur.geocoder import get_distance
+
+RESTAURANT_DISTANCE_CACHE_EXPIRE = 60 * 60 * 24 * 30
 
 
 class Login(forms.Form):
@@ -116,9 +119,9 @@ def view_orders(request):
         if restaurants := [product_restaurants.get(product) for product in order_products]:
             relevant_restaurants = copy.deepcopy(restaurants[0].intersection(*restaurants))
             for restaurant in relevant_restaurants:
-                restaurant.distance = get_distance(settings.GEOCODER_APIKEY, order.address, restaurant.address)
-                print(order.id, order.address, restaurant.address, restaurant.distance, sep=' | ')
-
+                restaurant.distance = cache.get_or_set(f'{order.id}{restaurant.id}',
+                                                       get_distance(settings.GEOCODER_APIKEY, order.address, restaurant.address)
+                                                       )
             order.restaurants = sorted(relevant_restaurants, key=lambda restaurant: restaurant.distance or 0)
 
     return render(request, template_name='orders.html', context={

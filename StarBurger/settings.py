@@ -73,6 +73,13 @@ TEMPLATES = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'cache_order_restaurant_distance',
+    }
+}
+
 WSGI_APPLICATION = 'StarBurger.wsgi.application'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
