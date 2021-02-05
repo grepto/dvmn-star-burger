@@ -7,7 +7,6 @@ from environs import Env
 env = Env()
 env.read_env()
 
-
 env = Env()
 env.read_env()
 
@@ -33,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'rest_framework',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +141,5 @@ STATICFILES_DIRS = [
 ]
 
 GEOCODER_APIKEY = env.str('GEOCODER_APIKEY')
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'RU'

@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Restaurant(models.Model):
@@ -96,7 +97,8 @@ class Order(models.Model):
     payment_form = models.IntegerField('способ оплаты', choices=PAYMENT_FORM_CHOICES, null=True)
     firstname = models.CharField('имя', max_length=100)
     lastname = models.CharField('фамилия', max_length=100)
-    phonenumber = models.CharField('номер телефона', max_length=100)
+    original_phonenumber = models.CharField('номер телефона', max_length=100)
+    phonenumber = PhoneNumberField('номер телефона')
     address = models.TextField('адрес доставки', max_length=8000)
     comment = models.TextField('комментарий', blank=True)
     registered_at = models.DateTimeField('создан', default=timezone.now)
