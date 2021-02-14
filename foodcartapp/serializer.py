@@ -14,7 +14,7 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ('firstname', 'lastname', 'phonenumber', 'address', 'products')
         read_only_fields = ('id', 'original_phonenumber')
 
     def validate_products(self, value):
