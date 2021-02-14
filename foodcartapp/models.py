@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 from django.core.validators import MinValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
@@ -72,6 +73,11 @@ class RestaurantMenuItem(models.Model):
         ]
 
 
+class OrderQuerySet(models.QuerySet):
+    def with_total_price(self):
+        return self.annotate(price=Sum('order_items__price'))
+
+
 class Order(models.Model):
     NEW = 0
     COOKING = 1
@@ -92,6 +98,8 @@ class Order(models.Model):
         (CASH, 'Наличные'),
         (CARD, 'Электронно'),
     ]
+
+    orders = OrderQuerySet.as_manager()
 
     status = models.IntegerField('статус', choices=STATUS_CHOICES, default=0)
     payment_form = models.IntegerField('способ оплаты', choices=PAYMENT_FORM_CHOICES, null=True)

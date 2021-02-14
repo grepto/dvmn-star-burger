@@ -3,7 +3,6 @@ import copy
 from django import forms
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Sum
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
@@ -106,8 +105,7 @@ def view_restaurants(request):
 def view_orders(request):
     products = Product.objects.filter(menu_items__availability=True).prefetch_related('menu_items__restaurant')
 
-    orders = Order.objects.annotate(price=Sum('order_items__price')).prefetch_related(
-        'order_items__product')
+    orders = Order.orders.with_total_price().prefetch_related('order_items__product')
 
     product_restaurants = {}
     for product in products.all():
