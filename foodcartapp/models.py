@@ -100,6 +100,7 @@ class Order(models.Model):
     ]
 
     orders = OrderQuerySet.as_manager()
+    objects = models.Manager()
 
     status = models.IntegerField('статус', choices=STATUS_CHOICES, default=0)
     payment_form = models.IntegerField('способ оплаты', choices=PAYMENT_FORM_CHOICES, null=True)
