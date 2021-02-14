@@ -114,7 +114,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items', verbose_name='заказ')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='order_items', verbose_name='продукт')
     quantity = models.PositiveSmallIntegerField('количество', validators=[MinValueValidator(1)])
     price = models.PositiveSmallIntegerField('Стоимость')
