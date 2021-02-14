@@ -113,7 +113,8 @@ def view_orders(request):
 
     for order in orders:
         order_products = [order_item.product for order_item in order.order_items.all()]
-        if restaurants := [product_restaurants.get(product) for product in order_products]:
+        restaurants = [product_restaurants.get(product) for product in order_products]
+        if restaurants:
             relevant_restaurants = copy.deepcopy(restaurants[0].intersection(*restaurants))
             for restaurant in relevant_restaurants:
                 cached_distance = cache.get(f'{order.id}{restaurant.id}')
