@@ -106,7 +106,7 @@ def view_restaurants(request):
 def view_orders(request):
     products = Product.objects.filter(menu_items__availability=True).prefetch_related('menu_items__restaurant')
 
-    orders = Order.objects.all().annotate(price=Sum('order_items__price')).prefetch_related(
+    orders = Order.objects.annotate(price=Sum('order_items__price')).prefetch_related(
         'order_items__product')
 
     product_restaurants = {}
