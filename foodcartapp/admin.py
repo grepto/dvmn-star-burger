@@ -131,6 +131,7 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [
         OrderItemInline
     ]
+    exclude = ['original_phonenumber']
 
     def response_change(self, request, obj):
         res = super(OrderAdmin, self).response_change(request, obj)
