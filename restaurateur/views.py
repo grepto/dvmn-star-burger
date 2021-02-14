@@ -116,9 +116,11 @@ def view_orders(request):
         if restaurants := [product_restaurants.get(product) for product in order_products]:
             relevant_restaurants = copy.deepcopy(restaurants[0].intersection(*restaurants))
             for restaurant in relevant_restaurants:
-                restaurant.distance = cache.get_or_set(f'{order.id}{restaurant.id}',
-                                                       get_distance(settings.GEOCODER_APIKEY, order.address, restaurant.address)
-                                                       )
+                cached_distance = cache.get(f'{order.id}{restaurant.id}')
+                if not cached_distance:
+                    cached_distance = get_distance(settings.GEOCODER_APIKEY, order.address, restaurant.address)
+                    cache.set(f'{order.id}{restaurant.id}', cached_distance)
+                restaurant.distance = cached_distance
             order.restaurants = sorted(relevant_restaurants, key=lambda restaurant: restaurant.distance or 0)
 
     return render(request, template_name='orders.html', context={
